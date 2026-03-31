@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referral Raffle — Horse Race</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a18; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2rem 1rem; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 6px; }
+  .sub { font-size: 14px; color: #666; margin-bottom: 1.5rem; }
+  #container { width: 100%; max-width: 900px; }
+  textarea { width: 100%; height: 140px; font-size: 13px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #fff; color: #1a1a18; resize: vertical; font-family: inherit; }
+  textarea:focus { outline: none; border-color: #888; }
+  .btn { padding: 9px 22px; font-size: 14px; font-weight: 500; border: 1px solid #ccc; border-radius: 8px; background: #fff; color: #1a1a18; cursor: pointer; transition: background 0.15s; }
+  .btn:hover { background: #eee; }
+  .btn.primary { background: #1a1a18; color: #fff; border-color: #1a1a18; }
+  .btn.primary:hover { background: #333; }
+  .btn:disabled { opacity: 0.4; cursor: default; }
+  #track-wrap { width: 100%; border-radius: 12px; border: 1px solid #ddd; background: #fff; padding: 12px 0; margin-bottom: 1rem; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .lane { display: flex; align-items: center; height: 36px; margin: 2px 0; }
+  .label { width: 120px; min-width: 120px; font-size: 11px; color: #888; text-align: right; padding-right: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .track { flex: 1; position: relative; height: 100%; }
+  .track-bg { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent calc(10% - 0.5px), #eee calc(10% - 0.5px), #eee 10%); }
+  .horse-wrap { position: absolute; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 4px; will-change: left; }
+  .horse-icon { font-size: 20px; line-height: 1; }
+  .name-tag { font-size: 10px; font-weight: 600; white-space: nowrap; }
+  .finish-line { position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: repeating-linear-gradient(180deg,#E24B4A,#E24B4A 6px,#fff 6px,#fff 12px); }
+  #winner-banner { display: none; text-align: center; padding: 1.5rem 1rem; background: #fff; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  #winner-banner .trophy { font-size: 44px; }
+  #winner-banner .wname { font-size: 26px; font-weight: 500; color: #1a1a18; margin: 8px 0 4px; }
+  #winner-banner .wsub { font-size: 14px; color: #888; }
+  #controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  #speed-wrap { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #666; margin-left: auto; }
+  input[type=range] { accent-color: #1a1a18; cursor: pointer; }
+  .confetti-piece { position: fixed; pointer-events: none; border-radius: 2px; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+  #setup-card { background: #fff; border-radius: 12px; border: 1px solid #ddd; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+</style>
+</head>
+<body>
+<div id="container">
+
+  <div id="setup-card">
+    <h1>Referral Raffle 🏆</h1>
+    <p class="sub">Paste participant names below (one per line), then start the race!</p>
+    <textarea id="names-input" placeholder="Alice&#10;Bob&#10;Carol&#10;David&#10;Eve&#10;Frank&#10;Grace&#10;Hank&#10;Ivy&#10;Jack"></textarea>
+    <div style="margin-top: 12px;">
+      <button class="btn primary" onclick="startSetup()">Load participants</button>
+    </div>
+  </div>
+
+  <div id="race-view" style="display:none;">
+    <div id="track-wrap"><div id="track"></div></div>
+    <div id="winner-banner">
+      <div class="trophy">🏆</div>
+      <div class="wname" id="winner-name"></div>
+      <div class="wsub">wins the raffle!</div>
+    </div>
+    <div id="controls">
+      <button class="btn primary" id="race-btn" onclick="startRace()">Start race</button>
+      <button class="btn" onclick="resetRace()">New raffle</button>
+      <div id="speed-wrap">
+        Speed:
+        <input type="range" min="1" max="5" value="3" id="speed-slider" step="1" style="width:90px;">
+        <span id="speed-label">3</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const EMOJIS = ['🐴','🦄','🐎'];
+const COLORS = ['#378ADD','#1D9E75','#D85A30','#D4537E','#7F77DD','#639922','#BA7517','#E24B4A','#0F6E56','#533C89','#D85A30','#1D9E75','#378ADD','#D4537E','#7F77DD','#639922','#BA7517','#0F6E56','#533C89','#D85A30','#1D9E75','#378ADD','#D4537E','#7F77DD','#639922','#BA7517','#E24B4A','#0F6E56','#533C89','#BA7517'];
+
+let participants=[], pos=[], vel=[], phase=[], phaseTimer=[], finished=false, animId=null, winnerIdx=-1, raceStarted=false;
+
+document.getElementById('speed-slider').oninput = e => document.getElementById('speed-label').textContent = e.target.value;
+
+function startSetup() {
+  const raw = document.getElementById('names-input').value.trim();
+  participants = raw.split('\n').map(s => s.trim()).filter(Boolean);
+  if (participants.length < 2) { alert('Please enter at least 2 names.'); return; }
+  if (participants.length > 30) participants = participants.slice(0, 30);
+  buildTrack();
+  document.getElementById('setup-card').style.display = 'none';
+  document.getElementById('race-view').style.display = 'block';
+}
+
+function buildTrack() {
+  const track = document.getElementById('track');
+  track.innerHTML = '';
+  const n = participants.length;
+  pos = new Array(n).fill(0);
+  vel = participants.map(() => 0.8 + Math.random() * 0.4);
+  phase = participants.map(() => 'cruise');
+  phaseTimer = participants.map(() => 40 + Math.floor(Math.random() * 80));
+  finished = false; winnerIdx = -1; raceStarted = false;
+  document.getElementById('winner-banner').style.display = 'none';
+  document.getElementById('race-btn').disabled = false;
+  document.getElementById('race-btn').textContent = 'Start race';
+
+  participants.forEach((name, i) => {
+    const lane = document.createElement('div');
+    lane.className = 'lane';
+    const emoji = EMOJIS[i % EMOJIS.length];
+    lane.innerHTML = `<div class="label" title="${name}">${name}</div><div class="track" id="t${i}"><div class="track-bg"></div><div class="horse-wrap" id="h${i}" style="left:2px"><span class="horse-icon">${emoji}</span><span class="name-tag" style="color:${COLORS[i % COLORS.length]}">${name}</span></div><div class="finish-line"></div></div>`;
+    track.appendChild(lane);
+  });
+}
+
+function getTrackW() {
+  const t = document.getElementById('t0');
+  return t ? Math.max(t.clientWidth - 90, 200) : 400;
+}
+
+function startRace() {
+  if (finished || raceStarted) return;
+  raceStarted = true;
+  document.getElementById('race-btn').disabled = true;
+
+  const n = participants.length;
+  winnerIdx = Math.floor(Math.random() * n);
+  const trackW = getTrackW();
+  const speedMult = parseInt(document.getElementById('speed-slider').value);
+  const BASE = 1.2 * speedMult;
+
+  vel = participants.map(() => BASE * (0.7 + Math.random() * 0.6));
+  phase = participants.map(() => 'cruise');
+  phaseTimer = participants.map(() => 40 + Math.floor(Math.random() * 80));
+  let done = false;
+
+  function tick() {
+    if (done) return;
+    const tw = getTrackW();
+
+    for (let i = 0; i < n; i++) {
+      if (pos[i] >= tw) continue;
+
+      phaseTimer[i]--;
+      if (phaseTimer[i] <= 0) {
+        const r = Math.random();
+        if (phase[i] === 'surge') phase[i] = r < 0.6 ? 'cruise' : 'tired';
+        else if (phase[i] === 'tired') phase[i] = r < 0.7 ? 'cruise' : 'surge';
+        else phase[i] = r < 0.4 ? 'surge' : (r < 0.7 ? 'cruise' : 'tired');
+        phaseTimer[i] = 40 + Math.floor(Math.random() * 80);
+      }
+
+      const progress = pos[i] / tw;
+      let targetVel;
+      if (i === winnerIdx && progress > 0.72) {
+        targetVel = BASE * 1.55;
+      } else {
+        const phaseBoost = phase[i] === 'surge' ? 1.4 : (phase[i] === 'tired' ? 0.55 : 1.0);
+        targetVel = BASE * phaseBoost * (0.85 + Math.random() * 0.3);
+        if (i !== winnerIdx && progress > 0.85) targetVel *= 0.5;
+      }
+
+      const diff = targetVel - vel[i];
+      vel[i] += diff * 0.08 + (Math.random() - 0.5) * 0.15;
+      vel[i] = Math.max(0.2, vel[i]);
+      pos[i] = Math.min(tw, pos[i] + vel[i]);
+
+      const hw = document.getElementById('h' + i);
+      if (hw) hw.style.left = Math.round(pos[i]) + 'px';
+
+      if (pos[i] >= tw && !done) {
+        done = true; finished = true;
+        showWinner(participants[i]);
+        return;
+      }
+    }
+    animId = requestAnimationFrame(tick);
+  }
+  animId = requestAnimationFrame(tick);
+}
+
+function showWinner(name) {
+  document.getElementById('winner-name').textContent = name;
+  document.getElementById('winner-banner').style.display = 'block';
+  spawnConfetti();
+}
+
+function spawnConfetti() {
+  const cols = ['#378ADD','#1D9E75','#D85A30','#D4537E','#7F77DD','#639922','#BA7517','#E24B4A'];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    const s = 5 + Math.random() * 9;
+    el.style.cssText = `width:${s}px;height:${s}px;background:${cols[i % cols.length]};left:${Math.random() * 100}%;top:-20px;animation-duration:${1.5 + Math.random() * 2.5}s;animation-delay:${Math.random() * 0.8}s;`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 5000);
+  }
+}
+
+function resetRace() {
+  if (animId) cancelAnimationFrame(animId);
+  finished = false; raceStarted = false; winnerIdx = -1;
+  document.getElementById('setup-card').style.display = 'block';
+  document.getElementById('race-view').style.display = 'none';
+}
+</script>
+</body>
+</html>
