@@ -13,7 +13,7 @@
     --red:#e94560; --yel:#f5a623; --white:#d6f0db; --dim:#2d7a3a;
     --px:'Press Start 2P',monospace;
   }
-  body { font-family:var(--px); background:var(--bg); color:var(--white); min-height:100vh; padding:2rem 1rem 3rem; display:flex; flex-direction:column; align-items:center; position:relative; }
+  body { font-family:var(--px); background:var(--bg); color:var(--white); min-height:100vh; padding:2rem 1rem 3rem; display:flex; flex-direction:column; align-items:center; }
   body::after { content:''; position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px); pointer-events:none; z-index:998; }
   #container { width:100%; max-width:900px; }
   .header { text-align:center; margin-bottom:2rem; }
@@ -51,39 +51,37 @@
   .remove-btn { font-size:9px; font-family:var(--px); background:none; border:2px solid var(--dim); color:var(--dim); cursor:pointer; padding:5px 8px; }
   .remove-btn:hover { border-color:var(--red); color:var(--red); }
   .setup-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:4px; }
-  .emoji-picker { position:fixed; background:var(--bg2); border:2px solid var(--g1); padding:8px; z-index:1000; display:flex; flex-wrap:wrap; gap:6px; max-width:230px; }
   .emoji-picker span { font-size:20px; cursor:pointer; padding:4px; }
   .emoji-picker span:hover { background:var(--panel); }
 
-  /* Track */
+  /* Race */
   #track-wrap { background:#0d1f12; border:3px solid var(--panel); outline:2px solid var(--g1); outline-offset:-5px; padding:10px 0; margin-bottom:1.2rem; overflow:hidden; }
   .lane { display:flex; align-items:center; height:38px; margin:2px 0; }
   .lane:nth-child(odd) .track { background:rgba(78,203,113,0.04); }
-  .lane-lbl { width:120px; min-width:120px; font-size:7px; color:var(--g1); text-align:right; padding-right:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:1px; }
+  .lane-lbl { width:120px; min-width:120px; font-size:7px; text-align:right; padding-right:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:1px; }
   .track { flex:1; position:relative; height:100%; }
   .track-bg { position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent,transparent calc(10% - 1px),rgba(91,107,192,0.1) calc(10% - 1px),rgba(91,107,192,0.1) 10%); }
   .horse-wrap { position:absolute; top:50%; transform:translateY(-50%); display:flex; align-items:center; gap:5px; will-change:left; }
-  .horse-emoji { font-size:20px; line-height:1; flex-shrink:0; }
+  .horse-emoji { font-size:20px; line-height:1; flex-shrink:0; display:inline-block; }
   .name-tag { font-size:7px; white-space:nowrap; letter-spacing:1px; }
   .finish-line { position:absolute; right:0; top:0; bottom:0; width:18px; background-image:repeating-conic-gradient(#fff 0% 25%,#000 0% 50%); background-size:9px 9px; border-left:2px solid #fff; z-index:2; }
-  @keyframes gallop-bounce { from{transform:translateY(0)} to{transform:translateY(-3px)} }
-  .racing .horse-emoji { animation:gallop-bounce 0.28s ease-in-out infinite alternate; }
+  @keyframes fade-out { from{opacity:1} to{opacity:0} }
+  .racing .name-tag { animation: fade-out 1s ease-out forwards; }
 
-  /* Winner popup overlay */
-  #winner-overlay { display:none; position:absolute; inset:0; min-height:100%; background:rgba(0,0,0,0.82); z-index:500; align-items:center; justify-content:center; padding:2rem; }
-  #winner-overlay.show { display:flex; }
-  #winner-banner { text-align:center; padding:2.5rem 2rem; background:var(--bg2); border:3px solid var(--panel); outline:3px solid var(--red); outline-offset:-6px; width:min(480px,90vw); position:relative; }
-  #winner-banner .hs { font-size:8px; letter-spacing:3px; color:var(--yel); margin-bottom:14px; animation:blink 1.1s step-end infinite; }
-  #winner-banner .trophy { font-size:48px; display:block; margin-bottom:12px; }
-  #winner-banner .wlbl { font-size:8px; letter-spacing:3px; color:var(--dim); margin-bottom:10px; }
-  #winner-banner .wname { font-size:clamp(16px,4vw,28px); color:var(--red); text-shadow:3px 3px 0 #7a1828; letter-spacing:3px; line-height:1.4; margin-bottom:12px; }
-  #winner-banner .wsub { font-size:8px; letter-spacing:2px; color:var(--g1); margin-bottom:1.5rem; }
-  #winner-banner .popup-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  /* Winner screen */
+  #winner-screen { display:none; text-align:center; padding:3rem 2rem; background:var(--bg2); border:3px solid var(--panel); outline:3px solid var(--red); outline-offset:-6px; margin-bottom:1.2rem; }
+  #winner-screen .hs { font-size:8px; letter-spacing:3px; color:var(--yel); margin-bottom:16px; animation:blink 1.1s step-end infinite; }
+  #winner-screen .trophy { font-size:56px; display:block; margin-bottom:14px; }
+  #winner-screen .wlbl { font-size:8px; letter-spacing:3px; color:var(--dim); margin-bottom:10px; }
+  #winner-screen .wname { font-size:clamp(18px,4vw,32px); color:var(--red); text-shadow:3px 3px 0 #7a1828; letter-spacing:3px; line-height:1.4; margin-bottom:10px; }
+  #winner-screen .wsub { font-size:8px; letter-spacing:2px; color:var(--g1); margin-bottom:2rem; }
+  #winner-screen .winner-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
+  #remaining { font-size:8px; color:var(--dim); letter-spacing:1px; margin-bottom:8px; text-align:right; }
+  #remaining span { color:var(--g1); }
   #controls { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
   #speed-wrap { display:flex; align-items:center; gap:8px; font-size:8px; letter-spacing:1px; color:var(--dim); margin-left:auto; }
   input[type=range] { accent-color:var(--g2); cursor:pointer; width:80px; }
-  #remaining { font-size:8px; color:var(--dim); letter-spacing:1px; margin-bottom:8px; text-align:right; }
-  #remaining span { color:var(--g1); }
   .confetti-piece { position:fixed; pointer-events:none; animation:fall linear forwards; }
   @keyframes fall { to{transform:translateY(100vh) rotate(720deg);opacity:0} }
 </style>
@@ -100,85 +98,114 @@
     <div>CREDIT &nbsp;<span>01</span></div>
   </div>
 
-  <div id="setup-card" class="panel">
-    <div class="panel-title">&gt; ENTER PARTICIPANTS</div>
-    <table class="setup-table">
-      <thead>
-        <tr>
-          <th style="width:50px">EMOJI</th>
-          <th>NAME</th>
-          <th class="center" style="width:110px">ENTRIES</th>
-          <th style="width:36px"></th>
-        </tr>
-      </thead>
-      <tbody id="player-rows"></tbody>
-    </table>
-    <div class="setup-actions">
-      <button class="btn go" onclick="addPlayerRow()">+ ADD PLAYER</button>
-      <button class="btn primary" onclick="startSetup()">START RACE &gt;</button>
-    </div>
-  </div>
-
-  <div id="race-view" style="display:none">
-    <div id="remaining">REMAINING: <span id="remaining-count">0</span> PLAYERS</div>
-    <div id="track-wrap"><div id="track"></div></div>
-  <div id="winner-overlay">
-    <div id="winner-banner">
-      <div class="hs">★ NEW HIGH SCORE ★</div>
-      <span class="trophy">🏆</span>
-      <div class="wlbl">WINNER</div>
-      <div class="wname" id="winner-name"></div>
-      <div class="wsub">WINS THE RAFFLE!</div>
-      <div class="popup-actions">
-        <button class="btn go" id="next-btn" onclick="nextRace()">NEXT RACE &gt;</button>
-        <button class="btn" onclick="resetRace()">NEW RAFFLE</button>
+  <!-- SCREEN 1: Setup -->
+  <div id="setup-screen">
+    <div class="panel">
+      <div class="panel-title">&gt; ENTER PARTICIPANTS</div>
+      <table class="setup-table">
+        <thead>
+          <tr>
+            <th style="width:50px">EMOJI</th>
+            <th>NAME</th>
+            <th class="center" style="width:110px">ENTRIES</th>
+            <th style="width:36px"></th>
+          </tr>
+        </thead>
+        <tbody id="player-rows"></tbody>
+      </table>
+      <div class="setup-actions">
+        <button class="btn go" onclick="addPlayerRow()">+ ADD PLAYER</button>
+        <button class="btn primary" onclick="startSetup()">START RACE &gt;</button>
       </div>
     </div>
   </div>
+
+  <!-- SCREEN 2: Race -->
+  <div id="race-screen" style="display:none">
+    <div id="remaining">REMAINING: <span id="remaining-count">0</span> PLAYERS</div>
+    <div id="track-wrap"><div id="track"></div></div>
     <div class="panel" style="padding:1rem 1.25rem">
       <div id="controls">
         <button class="btn primary" id="race-btn" onclick="startRace()">START RACE &gt;</button>
-        <button class="btn" onclick="resetRace()">NEW RAFFLE</button>
+        <button class="btn" onclick="resetRace()">NEW RACE</button>
         <div id="speed-wrap">SPD: <input type="range" min="1" max="5" value="1" id="speed-slider" step="1"> <span id="speed-label">1</span></div>
       </div>
     </div>
   </div>
+
+  <!-- SCREEN 3: Winner -->
+  <div id="winner-screen" style="display:none">
+    <div class="panel" style="text-align:center; padding:3rem 2rem; outline-color:var(--red);">
+      <div class="hs" style="font-size:8px;letter-spacing:3px;color:var(--yel);margin-bottom:16px;animation:blink 1.1s step-end infinite;">★ NEW HIGH SCORE ★</div>
+      <span style="font-size:56px;display:block;margin-bottom:14px;">🏆</span>
+      <div style="font-size:8px;letter-spacing:3px;color:var(--dim);margin-bottom:10px;">WINNER</div>
+      <div id="winner-name" style="font-size:clamp(18px,4vw,32px);color:var(--red);text-shadow:3px 3px 0 #7a1828;letter-spacing:3px;line-height:1.4;margin-bottom:10px;"></div>
+      <div style="font-size:8px;letter-spacing:2px;color:var(--g1);margin-bottom:2rem;">WINS THE RAFFLE!</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn go" id="next-btn" onclick="goNextRace()">NEXT RACE &gt;</button>
+        <button class="btn" onclick="resetRace()">NEW RACE</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
 const COLORS = ['#4ecb71','#e94560','#f5a623','#7ddf96','#80dfff','#ffb347','#ff6eb4','#b2f0c0','#f08080','#c8a2c8','#4ecb71','#e94560','#f5a623','#7ddf96','#80dfff','#ffb347','#ff6eb4','#b2f0c0','#f08080','#c8a2c8'];
 const EMOJI_OPTIONS = ['🐴','🦄','🐎','🏇','🐲','🐯','🦊','🐺','🐻','🦁','🐸','🐧','🦅','🐬','🦋','⚡','🔥','💎','🌟','🚀','🎯','🎪','🎠','🎡','🏆','👑','🌈','🍀','🎸','🎺'];
 
-// ── Core state ────────────────────────────────────────────
-// originalPlayers: set once when race starts, never mutated
-// remainingPlayers: copy that gets winners removed after each round
-// lanes: expanded array of {name, emoji, color} for current round
-let originalPlayers = [];   // [{name, emoji, entries, color}]
-let remainingPlayers = [];  // [{name, emoji, entries, color}]
-let lanes = [];             // [{name, emoji, color}] — current round lanes
-
-// Race animation state
+// State
+let originalPlayers  = []; // [{name, emoji, entries, color}] — set once, never mutated
+let remainingPlayers = []; // copy filtered each round
+let lanes            = []; // expanded for current round [{name,emoji,color}]
 let pos=[], vel=[], phase=[], phaseTimer=[];
 let finished=false, animId=null, winnerIdx=-1, raceStarted=false, roundNum=0;
 let activePicker=null;
 
+// ── Helpers ───────────────────────────────────────────────
+function showScreen(name) {
+  document.getElementById('setup-screen').style.display  = name==='setup'  ? 'block' : 'none';
+  document.getElementById('race-screen').style.display   = name==='race'   ? 'block' : 'none';
+  document.getElementById('winner-screen').style.display = name==='winner' ? 'block' : 'none';
+}
+
+function updateHUD() {
+  document.getElementById('round-count').textContent     = String(roundNum).padStart(2,'0');
+  document.getElementById('player-count').textContent    = String(remainingPlayers.length).padStart(2,'0');
+  document.getElementById('remaining-count').textContent = remainingPlayers.length;
+}
+
 // ── Emoji picker ──────────────────────────────────────────
 function togglePicker(btn, e) {
-  e.stopPropagation(); closePicker();
-  const picker = document.createElement('div');
-  picker.className = 'emoji-picker';
+  e.stopPropagation();
+  // If clicking the same button, just close
+  if (activePicker && activePicker.btn === btn) { closePicker(); return; }
+  closePicker();
+  const tr = btn.closest('tr');
+  const pickerTr = document.createElement('tr');
+  const pickerTd = document.createElement('td');
+  pickerTd.colSpan = 4;
+  pickerTd.style.cssText = 'padding:4px 6px 8px;';
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;background:var(--bg);border:2px solid var(--g1);padding:8px;';
   EMOJI_OPTIONS.forEach(em => {
     const sp = document.createElement('span');
     sp.textContent = em;
+    sp.style.cssText = 'font-size:22px;cursor:pointer;padding:3px;';
+    sp.onmouseover = () => sp.style.background = 'var(--panel)';
+    sp.onmouseout  = () => sp.style.background = '';
     sp.onclick = ev => { ev.stopPropagation(); btn.textContent = em; closePicker(); };
-    picker.appendChild(sp);
+    grid.appendChild(sp);
   });
-  const r = btn.getBoundingClientRect();
-  picker.style.cssText = `top:${r.bottom+window.scrollY+4}px;left:${r.left+window.scrollX}px;`;
-  document.body.appendChild(picker);
-  activePicker = picker;
+  pickerTd.appendChild(grid);
+  pickerTr.appendChild(pickerTd);
+  tr.after(pickerTr);
+  activePicker = { btn, pickerTr };
 }
-function closePicker() { if (activePicker) { activePicker.remove(); activePicker=null; } }
+
+function closePicker() {
+  if (activePicker) { activePicker.pickerTr.remove(); activePicker = null; }
+}
 document.addEventListener('click', closePicker);
 
 function getUsedEmojis() { return [...document.querySelectorAll('.emoji-btn')].map(b=>b.textContent); }
@@ -191,52 +218,43 @@ function cycleEmoji(row, dir) {
 
 // ── Setup rows ────────────────────────────────────────────
 function addPlayerRow(name='', emoji=null, entries=1) {
-  const tbody = document.getElementById('player-rows');
-  const idx   = tbody.children.length;
-  const em    = emoji || nextUnusedEmoji();
-  const tr    = document.createElement('tr');
+  const tbody=document.getElementById('player-rows');
+  const idx=tbody.children.length;
+  const em=emoji||nextUnusedEmoji();
+  const tr=document.createElement('tr');
 
-  // Emoji
-  const tdE = document.createElement('td');
-  const emojiBtn = document.createElement('button');
-  emojiBtn.className = 'emoji-btn'; emojiBtn.textContent = em;
-  emojiBtn.onclick = e => togglePicker(emojiBtn, e);
-  tdE.appendChild(emojiBtn);
+  const tdE=document.createElement('td');
+  const emojiBtn=document.createElement('button'); emojiBtn.className='emoji-btn'; emojiBtn.textContent=em;
+  emojiBtn.onclick=e=>togglePicker(emojiBtn,e); tdE.appendChild(emojiBtn);
 
-  // Name
-  const tdN = document.createElement('td');
-  const input = document.createElement('input');
-  input.type='text'; input.className='name-input';
+  const tdN=document.createElement('td');
+  const input=document.createElement('input'); input.type='text'; input.className='name-input';
   input.placeholder='Player '+(idx+1); input.value=name; input.maxLength=20;
-  input.addEventListener('keydown', e => {
-    const all=[...document.querySelectorAll('.name-input')];
-    const i=all.indexOf(input);
-    if (e.key==='ArrowDown') { e.preventDefault(); if(i<all.length-1) all[i+1].focus(); else { addPlayerRow(); setTimeout(()=>{const u=[...document.querySelectorAll('.name-input')];u[u.length-1].focus();},0); } }
-    if (e.key==='ArrowUp') { e.preventDefault(); if(i>0) all[i-1].focus(); }
-    if (e.key==='ArrowLeft'&&input.selectionStart===0) { e.preventDefault(); cycleEmoji(tr,-1); }
-    if (e.key==='ArrowRight'&&input.selectionStart===input.value.length) { e.preventDefault(); cycleEmoji(tr,1); }
-    if (e.key==='Backspace'&&input.value==='') { e.preventDefault(); if(document.getElementById('player-rows').children.length<=2) return; const prev=i>0?all[i-1]:all[1]; tr.remove(); closePicker(); if(prev) prev.focus(); }
-    if (e.key==='Enter') { e.preventDefault(); if(i<all.length-1) all[i+1].focus(); else startSetup(); }
+  input.addEventListener('keydown', e=>{
+    const all=[...document.querySelectorAll('.name-input')], i=all.indexOf(input);
+    if(e.key==='ArrowDown'){e.preventDefault();if(i<all.length-1)all[i+1].focus();else{addPlayerRow();setTimeout(()=>{const u=[...document.querySelectorAll('.name-input')];u[u.length-1].focus();},0);}}
+    if(e.key==='ArrowUp'){e.preventDefault();if(i>0)all[i-1].focus();}
+    if(e.key==='ArrowLeft'&&input.selectionStart===0){e.preventDefault();cycleEmoji(tr,-1);}
+    if(e.key==='ArrowRight'&&input.selectionStart===input.value.length){e.preventDefault();cycleEmoji(tr,1);}
+    if(e.key==='Backspace'&&input.value===''){e.preventDefault();if(document.getElementById('player-rows').children.length<=2)return;const prev=i>0?all[i-1]:all[1];tr.remove();closePicker();if(prev)prev.focus();}
+    if(e.key==='Enter'){e.preventDefault();if(i<all.length-1)all[i+1].focus();else startSetup();}
   });
   tdN.appendChild(input);
 
-  // Entries
-  const tdEn = document.createElement('td');
-  const wrap = document.createElement('div'); wrap.className='entries-wrap';
-  const minus = document.createElement('button'); minus.className='entries-btn'; minus.textContent='−';
-  const valIn = document.createElement('input'); valIn.type='text'; valIn.className='entries-input'; valIn.value=entries; valIn.maxLength=2;
-  valIn.addEventListener('input', ()=>{ const v=parseInt(valIn.value); if(isNaN(v)||v<1) valIn.value=''; else if(v>20) valIn.value=20; });
-  valIn.addEventListener('blur', ()=>{ if(!valIn.value||parseInt(valIn.value)<1) valIn.value=1; });
-  const plus = document.createElement('button'); plus.className='entries-btn'; plus.textContent='+';
-  minus.onclick = ()=>{ const v=parseInt(valIn.value)||1; if(v>1) valIn.value=v-1; };
-  plus.onclick  = ()=>{ const v=parseInt(valIn.value)||1; if(v<20) valIn.value=v+1; };
-  wrap.appendChild(minus); wrap.appendChild(valIn); wrap.appendChild(plus);
-  tdEn.appendChild(wrap);
+  const tdEn=document.createElement('td');
+  const wrap=document.createElement('div'); wrap.className='entries-wrap';
+  const minus=document.createElement('button'); minus.className='entries-btn'; minus.textContent='−';
+  const valIn=document.createElement('input'); valIn.type='text'; valIn.className='entries-input'; valIn.value=entries; valIn.maxLength=2;
+  valIn.addEventListener('input',()=>{const v=parseInt(valIn.value);if(isNaN(v)||v<1)valIn.value='';else if(v>20)valIn.value=20;});
+  valIn.addEventListener('blur',()=>{if(!valIn.value||parseInt(valIn.value)<1)valIn.value=1;});
+  const plus=document.createElement('button'); plus.className='entries-btn'; plus.textContent='+';
+  minus.onclick=()=>{const v=parseInt(valIn.value)||1;if(v>1)valIn.value=v-1;};
+  plus.onclick=()=>{const v=parseInt(valIn.value)||1;if(v<20)valIn.value=v+1;};
+  wrap.appendChild(minus); wrap.appendChild(valIn); wrap.appendChild(plus); tdEn.appendChild(wrap);
 
-  // Remove
-  const tdR = document.createElement('td');
-  const removeBtn = document.createElement('button'); removeBtn.className='remove-btn'; removeBtn.textContent='✕';
-  removeBtn.onclick = ()=>{ if(document.getElementById('player-rows').children.length<=2){alert('Minimum 2 players required.');return;} tr.remove(); closePicker(); };
+  const tdR=document.createElement('td');
+  const removeBtn=document.createElement('button'); removeBtn.className='remove-btn'; removeBtn.textContent='✕';
+  removeBtn.onclick=()=>{if(document.getElementById('player-rows').children.length<=2){alert('Minimum 2 players required.');return;}tr.remove();closePicker();};
   tdR.appendChild(removeBtn);
 
   tr.appendChild(tdE); tr.appendChild(tdN); tr.appendChild(tdEn); tr.appendChild(tdR);
@@ -245,66 +263,49 @@ function addPlayerRow(name='', emoji=null, entries=1) {
 
 function getPlayersFromForm() {
   return [...document.querySelectorAll('#player-rows tr')].map(row=>({
-    name:    row.querySelector('.name-input').value.trim(),
-    emoji:   row.querySelector('.emoji-btn').textContent,
+    name:  row.querySelector('.name-input').value.trim(),
+    emoji: row.querySelector('.emoji-btn').textContent,
     entries: parseInt(row.querySelector('.entries-input').value)||1
   })).filter(p=>p.name);
 }
 
-for (let i=0;i<5;i++) addPlayerRow();
+function resetForm() {
+  document.getElementById('player-rows').innerHTML = '';
+  for (let i = 0; i < 5; i++) addPlayerRow();
+}
 
 // ── Start ─────────────────────────────────────────────────
 function startSetup() {
-  const players = getPlayersFromForm();
-  if (players.length < 2) { alert('Please enter at least 2 player names.'); return; }
-
-  // Assign one fixed color per unique player name
-  originalPlayers = players.slice(0,30).map((p,i) => ({
-    ...p,
-    color: COLORS[i % COLORS.length]
-  }));
-  remainingPlayers = originalPlayers.map(p=>({...p})); // deep copy
-  roundNum = 0;
-
-  expandAndBuild();
-  document.getElementById('setup-card').style.display='none';
-  document.getElementById('race-view').style.display='block';
+  const players=getPlayersFromForm();
+  if(players.length<2){alert('Please enter at least 2 player names.');return;}
+  originalPlayers=players.slice(0,30).map((p,i)=>({...p,color:COLORS[i%COLORS.length]}));
+  remainingPlayers=originalPlayers.map(p=>({...p}));
+  roundNum=0;
+  buildRound();
+  showScreen('race');
 }
 
-// Expand remainingPlayers into lanes for the current round
-function expandAndBuild() {
-  lanes = [];
-  remainingPlayers.forEach(p => {
-    for (let e=0; e<p.entries; e++) {
-      lanes.push({ name: p.name, emoji: p.emoji, color: p.color });
-    }
+// Build lanes from remainingPlayers and show race screen
+function buildRound() {
+  lanes=[];
+  remainingPlayers.forEach(p=>{
+    for(let e=0;e<p.entries;e++) lanes.push({name:p.name,emoji:p.emoji,color:p.color});
   });
-  buildTrack();
-}
 
-function updateHUD() {
-  document.getElementById('round-count').textContent     = String(roundNum).padStart(2,'0');
-  document.getElementById('player-count').textContent    = String(remainingPlayers.length).padStart(2,'0');
-  document.getElementById('remaining-count').textContent = remainingPlayers.length;
-}
-
-function buildTrack() {
-  const trackEl = document.getElementById('track');
-  trackEl.innerHTML = '';
-  const n = lanes.length;
+  const trackEl=document.getElementById('track');
+  trackEl.innerHTML='';
+  const n=lanes.length;
   pos=[]; vel=[]; phase=[]; phaseTimer=[];
   for(let i=0;i<n;i++){
     pos.push(0); vel.push(0.8+Math.random()*0.4);
     phase.push('cruise'); phaseTimer.push(40+Math.floor(Math.random()*80));
   }
   finished=false; winnerIdx=-1; raceStarted=false;
-  document.getElementById('winner-banner').style.display='none';
   document.getElementById('race-btn').disabled=false;
   document.getElementById('race-btn').textContent='START RACE >';
-  document.getElementById('next-btn').style.display='none';
   updateHUD();
 
-  lanes.forEach((lane,i) => {
+  lanes.forEach((lane,i)=>{
     const laneEl=document.createElement('div'); laneEl.className='lane';
     const labelEl=document.createElement('div'); labelEl.className='lane-lbl'; labelEl.title=lane.name; labelEl.textContent=lane.name; labelEl.style.color=lane.color;
     const trackDiv=document.createElement('div'); trackDiv.className='track'; trackDiv.id='t'+i;
@@ -321,27 +322,31 @@ function buildTrack() {
 }
 
 function getTrackW() {
-  const t=document.getElementById('t0'), h=document.getElementById('h0');
-  return t ? Math.max(t.clientWidth-18-Math.round((h?h.offsetWidth:70)*0.4),200) : 400;
+  const t=document.getElementById('t0'),h=document.getElementById('h0');
+  return t?Math.max(t.clientWidth-18-Math.round((h?h.offsetWidth:70)*0.4),200):400;
 }
 
 // ── Race ──────────────────────────────────────────────────
-document.getElementById('speed-slider').oninput = e => document.getElementById('speed-label').textContent=e.target.value;
+document.getElementById('speed-slider').oninput=e=>document.getElementById('speed-label').textContent=e.target.value;
 
 function startRace() {
-  if (finished||raceStarted) return;
+  if(finished||raceStarted) return;
   raceStarted=true; roundNum++;
   document.getElementById('race-btn').disabled=true;
   document.getElementById('round-count').textContent=String(roundNum).padStart(2,'0');
-  document.querySelectorAll('.horse-wrap').forEach(el=>el.classList.add('racing'));
+  document.querySelectorAll('.horse-wrap').forEach(el => {
+    el.classList.add('racing');
+    const emoji = el.querySelector('.horse-emoji');
+    if (emoji) emoji.style.animation = 'gallop-bounce 0.28s ease-in-out infinite alternate';
+  });
 
   const n=lanes.length;
   winnerIdx=Math.floor(Math.random()*n);
   const BASE=1.2*parseInt(document.getElementById('speed-slider').value);
-  for(let i=0;i<n;i++){ vel[i]=BASE*(0.7+Math.random()*0.6); phase[i]='cruise'; phaseTimer[i]=40+Math.floor(Math.random()*80); }
+  for(let i=0;i<n;i++){vel[i]=BASE*(0.7+Math.random()*0.6);phase[i]='cruise';phaseTimer[i]=40+Math.floor(Math.random()*80);}
   let done=false;
 
-  function tick() {
+  function tick(){
     if(done) return;
     const tw=getTrackW();
     for(let i=0;i<n;i++){
@@ -358,30 +363,27 @@ function startRace() {
       pos[i]=Math.min(tw,pos[i]+vel[i]);
       const hw=document.getElementById('h'+i);
       if(hw) hw.style.left=Math.round(pos[i])+'px';
-      if(pos[i]>=tw&&!done){ done=true; finished=true; showWinner(lanes[i].name); return; }
+      if(pos[i]>=tw&&!done){done=true;finished=true;declareWinner(lanes[i].name);return;}
     }
     animId=requestAnimationFrame(tick);
   }
   animId=requestAnimationFrame(tick);
 }
 
-function showWinner(winnerName) {
+function declareWinner(winnerName) {
   // Remove winner from remainingPlayers
-  remainingPlayers = remainingPlayers.filter(p => p.name !== winnerName);
-
-  document.getElementById('winner-name').textContent = winnerName;
-  document.getElementById('winner-overlay').classList.add('show');
-  document.getElementById('next-btn').style.display = remainingPlayers.length >= 2 ? 'inline-block' : 'none';
-  updateHUD();
+  remainingPlayers=remainingPlayers.filter(p=>p.name!==winnerName);
+  // Show winner screen
+  document.getElementById('winner-name').textContent=winnerName;
+  document.getElementById('next-btn').style.display=remainingPlayers.length>=2?'inline-block':'none';
+  showScreen('winner');
   spawnConfetti();
 }
 
-function nextRace() {
+function goNextRace() {
   if(animId) cancelAnimationFrame(animId);
-  document.getElementById('winner-overlay').classList.remove('show');
-  document.getElementById('setup-card').style.display='block';
-  document.getElementById('race-view').style.display='none';
-  expandAndBuild();
+  buildRound();          // rebuild track from updated remainingPlayers
+  showScreen('race');    // show race screen (winner already removed)
 }
 
 function resetRace() {
@@ -389,9 +391,8 @@ function resetRace() {
   finished=false; raceStarted=false; winnerIdx=-1; roundNum=0;
   originalPlayers=[]; remainingPlayers=[]; lanes=[];
   document.getElementById('player-rows').innerHTML='';
-  if(originalPlayers.length>0) originalPlayers.forEach(p=>addPlayerRow(p.name,p.emoji,p.entries));
-  else for(let i=0;i<5;i++) addPlayerRow();
-  document.getElementById('winner-overlay').classList.remove('show');
+  for (let i=0; i<3; i++) addPlayerRow();
+  showScreen('setup');
 }
 
 function spawnConfetti() {
@@ -402,7 +403,7 @@ function spawnConfetti() {
     el.style.cssText=`width:${s}px;height:${s}px;background:${cols[i%cols.length]};left:${Math.random()*100}%;top:-20px;animation-duration:${1.8+Math.random()*2.5}s;animation-delay:${Math.random()*0.8}s;`;
     document.body.appendChild(el); setTimeout(()=>el.remove(),5500);
   }
-}
+}addPlayerRow(); addPlayerRow(); addPlayerRow();
 </script>
 </body>
 </html>
